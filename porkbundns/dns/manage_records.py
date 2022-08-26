@@ -3,7 +3,7 @@ import logging
 import requests
 import pandas as pd
 
-from dns_types import record_types
+from dns.dns_types import record_types
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +53,7 @@ def update(record_name: str, record_type: str, record_content: str, api_config: 
             api_config["endpoint"],
             data=json.dumps(api_config),
         )
-        logger.info(f"Entry updated {record_name} {record_type} {record_content}")
+        logger.info(f"Record updated: {record_name} \t {record_type} \t {record_content}")
 
     except requests.exceptions.ConnectionError as e:
         logger.error(e, record_name, record_type, record_content)
@@ -75,10 +75,10 @@ def bulk_update(domain_db: str, secrets: str) -> None:
 
     """
     df = pd.read_csv(domain_db)
-    domains = df[["name", "type", "content"]].to_dict("records")
+    domains = df[["host", "type", "answer"]].to_dict("records")
 
     with open(secrets, 'r') as f:
         api_config = json.load(f)
 
     for entry in domains:
-        update_record(entry['name'], entry['type'], entry['content'])
+        update(entry['host'], entry['type'], entry['answer'], api_config)
