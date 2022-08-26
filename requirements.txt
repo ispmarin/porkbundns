@@ -3,3 +3,4 @@ pandas
 flake8
 black
 isort
+twine
