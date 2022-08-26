@@ -1,13 +1,16 @@
 import json
 import logging
-import requests
-import pandas as pd
 
+import pandas as pd
+import requests
 from dns.dns_types import record_types
 
 logger = logging.getLogger(__name__)
 
-def update(record_name: str, record_type: str, record_content: str, api_config: dict) -> None:
+
+def update(
+    record_name: str, record_type: str, record_content: str, api_config: dict
+) -> None:
     """
     Update a DNS record.
 
@@ -45,18 +48,21 @@ def update(record_name: str, record_type: str, record_content: str, api_config: 
         logger.error(f"Wrong record type. Must be one of the following: {record_types}")
         raise requests.exceptions.ConnectionError
     try:
-        api_config['name'] = record_name
-        api_config['type'] = record_type
-        api_config['content'] = record_content
+        api_config["name"] = record_name
+        api_config["type"] = record_type
+        api_config["content"] = record_content
 
         requests.post(
             api_config["endpoint"],
             data=json.dumps(api_config),
         )
-        logger.info(f"Record updated: {record_name} \t {record_type} \t {record_content}")
+        logger.info(
+            f"Record updated: {record_name} \t {record_type} \t {record_content}"
+        )
 
     except requests.exceptions.ConnectionError as e:
         logger.error(e, record_name, record_type, record_content)
+
 
 def bulk_update(domain_db: str, secrets: str) -> None:
     """
@@ -77,8 +83,8 @@ def bulk_update(domain_db: str, secrets: str) -> None:
     df = pd.read_csv(domain_db)
     domains = df[["host", "type", "answer"]].to_dict("records")
 
-    with open(secrets, 'r') as f:
+    with open(secrets, "r") as f:
         api_config = json.load(f)
 
     for entry in domains:
-        update(entry['host'], entry['type'], entry['answer'], api_config)
+        update(entry["host"], entry["type"], entry["answer"], api_config)

@@ -1,5 +1,6 @@
-from dns import manage_records
 import logging
+
+from dns import manage_records
 
 logging.basicConfig(level=logging.INFO)
 
