@@ -21,3 +21,6 @@ classifiers = [
 [build-system]
 requires = ["hatchling", "pandas", "requests"]
 build-backend = "hatchling.build"
+
+[project.optional-dependencies]
+dev = ["black", "flake8", "isort", "twine", "pytest"]
