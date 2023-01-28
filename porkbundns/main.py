@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import sys
 import argparse
 import logging
+import sys
 
 from dns import manage_records
 

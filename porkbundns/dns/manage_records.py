@@ -80,7 +80,6 @@ def bulk_update(domain_db: str, secrets: str) -> None:
         The path of the file with the API secrets.
 
     """
-    domains = {}
     try:
         df = pd.read_csv(domain_db)
         domains = df[["host", "type", "answer"]].to_dict("records")
