@@ -13,7 +13,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Update DNS records on Porkbun")
     parser.add_argument(
         "-f",
-        "--file_host",
+        "--hostfile",
         type=str,
         dest="host_file",
         help="File with host DNS definitions, CSV format",
@@ -30,3 +30,4 @@ if __name__ == "__main__":
 
     logger.info("Starting DNS update using Porkbun API")
     manage_records.bulk_update(args.host_file, args.def_file)
+    logger.info("Done updating records")

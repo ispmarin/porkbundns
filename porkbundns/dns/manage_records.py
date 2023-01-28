@@ -8,7 +8,7 @@ from dns.dns_types import record_types
 logger = logging.getLogger(__name__)
 
 
-def update(
+def update_record(
     record_name: str, record_type: str, record_content: str, api_config: dict
 ) -> None:
     """
@@ -73,18 +73,26 @@ def bulk_update(domain_db: str, secrets: str) -> None:
 
     Parameters
     ----------
-    domain_db_filename: str
+    domain_db: str
         The path of the domain database file.
 
     secrets: str
         The path of the file with the API secrets.
 
     """
-    df = pd.read_csv(domain_db)
-    domains = df[["host", "type", "answer"]].to_dict("records")
+    domains = {}
+    try:
+        df = pd.read_csv(domain_db)
+        domains = df[["host", "type", "answer"]].to_dict("records")
+    except FileNotFoundError:
+        logger.error(f"File not found: {domain_db}")
 
-    with open(secrets, "r") as f:
-        api_config = json.load(f)
+    try:
+        with open(secrets, "r") as f:
+            api_config = json.load(f)
 
-    for entry in domains:
-        update(entry["host"], entry["type"], entry["answer"], api_config)
+        for entry in domains:
+            update_record(entry["host"], entry["type"], entry["answer"], api_config)
+
+    except FileNotFoundError:
+        logger.error(f"File not found: {secrets}")
