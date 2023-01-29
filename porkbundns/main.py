@@ -3,7 +3,7 @@ import argparse
 import logging
 import sys
 
-from dns import manage_records
+from dns.recordhandler import RecordHandler
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -28,6 +28,7 @@ if __name__ == "__main__":
     )
     args = parser.parse_args(args=None if sys.argv[1:] else ["--help"])
 
+    porkbunhandler = RecordHandler(args.def_file)
     logger.info("Starting DNS update using Porkbun API")
-    manage_records.bulk_update(args.host_file, args.def_file)
+    porkbunhandler.change_records(args.host_file, "create")
     logger.info("Done updating records")
